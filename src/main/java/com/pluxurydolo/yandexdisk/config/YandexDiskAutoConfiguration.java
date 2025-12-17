@@ -20,11 +20,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
     name = "token"
 )
 public class YandexDiskAutoConfiguration {
-    private final String yandexDiskToken;
-
-    public YandexDiskAutoConfiguration(@Value("${yandex.disk.token}") String yandexDiskToken) {
-        this.yandexDiskToken = yandexDiskToken;
-    }
 
     @Bean
     public YandexDiskClient yandexDiskClient(WebClient yandexDiskRestClient, WebClient yandexDiskDownloadingClient) {
@@ -32,7 +27,7 @@ public class YandexDiskAutoConfiguration {
     }
 
     @Bean
-    public WebClient yandexDiskRestClient() {
+    public WebClient yandexDiskRestClient(@Value("${yandex.disk.token}") String yandexDiskToken) {
         return WebClient.builder()
             .defaultHeader(AUTHORIZATION, yandexDiskToken)
             .baseUrl("https://cloud-api.yandex.net")
