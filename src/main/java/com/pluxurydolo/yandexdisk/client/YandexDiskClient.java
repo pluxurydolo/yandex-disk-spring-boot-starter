@@ -29,6 +29,7 @@ public class YandexDiskClient {
     public Mono<YandexDiskDefaultResponse> getUploadLink(String path) {
         Function<UriBuilder, URI> uri = uriBuilder -> uriBuilder.path("/v1/disk/resources/upload")
             .queryParam("path", path)
+            .queryParam("overwrite", true)
             .build();
 
         return yandexDiskRestClient.get()
