@@ -10,11 +10,11 @@ plugins {
 }
 
 group = 'io.github.pluxurydolo'
-version = '1.5.0'
+version = '1.6.0'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(25)
 	}
 }
 
@@ -47,7 +47,7 @@ publishing {
 				scm {
 					url = 'scm:git:git://github.com/yandex-disk-spring-boot-starter.git'
 					connection = 'scm:git:git://github.com/yandex-disk-spring-boot-starter.git'
-					tag = '1.5.0'
+					tag = '1.6.0'
 				}
 				licenses {
 					license {
