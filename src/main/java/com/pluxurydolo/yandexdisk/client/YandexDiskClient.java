@@ -1,6 +1,7 @@
 package com.pluxurydolo.yandexdisk.client;
 
 import com.pluxurydolo.yandexdisk.dto.YandexDiskDefaultResponse;
+import com.pluxurydolo.yandexdisk.wrapper.YandexDiskDownloadingClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -12,18 +13,23 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.util.function.Function;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 public class YandexDiskClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(YandexDiskClient.class);
 
+    private final YandexDiskDownloadingClient yandexDiskDownloadingClient;
     private final WebClient yandexDiskRestClient;
-    private final WebClient yandexDiskDownloadingClient;
 
-    public YandexDiskClient(WebClient yandexDiskRestClient, WebClient yandexDiskDownloadingClient) {
-        this.yandexDiskRestClient = yandexDiskRestClient;
+    public YandexDiskClient(YandexDiskDownloadingClient yandexDiskDownloadingClient, String yandexDiskToken) {
         this.yandexDiskDownloadingClient = yandexDiskDownloadingClient;
+
+        this.yandexDiskRestClient = WebClient.builder()
+            .defaultHeader(AUTHORIZATION, authorizationHeader(yandexDiskToken))
+            .baseUrl("https://cloud-api.yandex.net")
+            .build();
     }
 
     public Mono<YandexDiskDefaultResponse> getUploadLink(String path) {
@@ -36,7 +42,7 @@ public class YandexDiskClient {
             .uri(uri)
             .retrieve()
             .bodyToMono(YandexDiskDefaultResponse.class)
-            .doOnSuccess(it -> LOGGER.info("nrhf Ссылка для скачивания на диск успешно получена"));
+            .doOnSuccess(_ -> LOGGER.info("nrhf Ссылка для скачивания на диск успешно получена"));
     }
 
     public Mono<Integer> uploadFile(YandexDiskDefaultResponse uploadLink, byte[] file) {
@@ -51,7 +57,7 @@ public class YandexDiskClient {
             .retrieve()
             .bodyToMono(Void.class)
             .thenReturn(file.length)
-            .doOnSuccess(it -> LOGGER.info("aboq Файл успешно загружен на диск"));
+            .doOnSuccess(_ -> LOGGER.info("aboq Файл успешно загружен на диск"));
     }
 
     public Mono<YandexDiskDefaultResponse> getDownloadLink(String path) {
@@ -63,28 +69,30 @@ public class YandexDiskClient {
             .uri(uri)
             .retrieve()
             .bodyToMono(YandexDiskDefaultResponse.class)
-            .doOnSuccess(it -> LOGGER.info("nonf Ссылка для скачивания с диска успешно получена"));
+            .doOnSuccess(_ -> LOGGER.info("nonf Ссылка для скачивания с диска успешно получена"));
     }
 
     public Mono<byte[]> downloadFile(URI fileLocation) {
-        return yandexDiskDownloadingClient.get()
+        return yandexDiskDownloadingClient.webClient()
+            .get()
             .uri(fileLocation)
             .retrieve()
             .bodyToMono(byte[].class)
-            .doOnSuccess(it -> LOGGER.info("rrew Файл успешно скачан с диска"));
+            .doOnSuccess(_ -> LOGGER.info("rrew Файл успешно скачан с диска"));
     }
 
     public Mono<URI> getFileLocation(YandexDiskDefaultResponse downloadLink) {
         String href = downloadLink.href();
         URI uri = URI.create(href);
 
-        return yandexDiskDownloadingClient.get()
+        return yandexDiskDownloadingClient.webClient()
+            .get()
             .uri(uri)
             .retrieve()
             .toBodilessEntity()
             .map(HttpEntity::getHeaders)
             .mapNotNull(HttpHeaders::getLocation)
-            .doOnSuccess(it -> LOGGER.info("yhcj Местонахождение файла успешно получено"));
+            .doOnSuccess(_ -> LOGGER.info("yhcj Местонахождение файла успешно получено"));
     }
 
     public Mono<String> deleteFile(String path) {
@@ -98,6 +106,10 @@ public class YandexDiskClient {
             .retrieve()
             .toBodilessEntity()
             .thenReturn(path)
-            .doOnSuccess(it -> LOGGER.info("jace Файл {} успешно удален с диска", path));
+            .doOnSuccess(_ -> LOGGER.info("jace Файл {} успешно удален с диска", path));
+    }
+
+    private static String authorizationHeader(String yandexDiskToken) {
+        return String.format("OAuth %s", yandexDiskToken);
     }
 }

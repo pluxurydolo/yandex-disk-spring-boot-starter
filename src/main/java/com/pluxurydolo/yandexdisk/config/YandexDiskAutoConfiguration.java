@@ -1,9 +1,7 @@
 package com.pluxurydolo.yandexdisk.config;
 
-import com.pluxurydolo.yandexdisk.client.YandexDiskClient;
-import org.springframework.beans.factory.annotation.Value;
+import com.pluxurydolo.yandexdisk.wrapper.YandexDiskDownloadingClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.ClientCodecConfigurer;
 import org.springframework.util.unit.DataSize;
@@ -12,30 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.function.Consumer;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @AutoConfiguration
-@ConditionalOnProperty(
-    prefix = "yandex.disk",
-    name = "token"
-)
 public class YandexDiskAutoConfiguration {
 
     @Bean
-    public YandexDiskClient yandexDiskClient(WebClient yandexDiskRestClient, WebClient yandexDiskDownloadingClient) {
-        return new YandexDiskClient(yandexDiskRestClient, yandexDiskDownloadingClient);
-    }
-
-    @Bean
-    public WebClient yandexDiskRestClient(@Value("${yandex.disk.token}") String yandexDiskToken) {
-        return WebClient.builder()
-            .defaultHeader(AUTHORIZATION, yandexDiskToken)
-            .baseUrl("https://cloud-api.yandex.net")
-            .build();
-    }
-
-    @Bean
-    public WebClient yandexDiskDownloadingClient() {
+    public YandexDiskDownloadingClient yandexDiskDownloadingClient() {
         int maxInMemorySize = (int) DataSize.ofMegabytes(64)
             .toBytes();
 
@@ -46,9 +25,11 @@ public class YandexDiskAutoConfiguration {
             .codecs(clientCodecConfigurer)
             .build();
 
-        return WebClient.builder()
+        WebClient webClient = WebClient.builder()
             .exchangeStrategies(exchangeStrategies)
             .baseUrl("https://downloader.disk.yandex.ru")
             .build();
+
+        return new YandexDiskDownloadingClient(webClient);
     }
 }
