@@ -1,102 +1,105 @@
 import static org.jreleaser.model.Active.ALWAYS
 
 plugins {
-	id 'java'
-	id 'java-library'
-	id 'maven-publish'
-	id 'org.springframework.boot' version "$springBootVersion"
-	id 'io.spring.dependency-management' version "$dependencyManagementVersion"
-	id 'org.jreleaser' version "$jreleaserVersion"
-	id 'io.github.pluxurydolo.version-plugin' version "$versionPluginVersion"
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.springframework.boot' version "$springBootVersion"
+    id 'io.spring.dependency-management' version "$dependencyManagementVersion"
+    id 'org.jreleaser' version "$jreleaserVersion"
+    id 'io.github.pluxurydolo.version-plugin' version "$versionPluginVersion"
 }
 
 group = 'io.github.pluxurydolo'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(25)
-	}
+    withJavadocJar()
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 bootJar {
-	enabled = false
-}
-
-jar {
-	enabled = true
+    enabled = false
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 afterEvaluate {
-	publishing {
-		publications {
-			release(MavenPublication) {
-				from components.java
-				pom {
-					name = 'yandex-disk-spring-boot-starter'
-					description = 'Spring Boot Starter for Yandex Disk made for personal use'
-					url = 'https://upload.wikimedia.org/wikipedia/en/c/ce/Randallkennedybook.jpg'
-					developers {
-						developer {
-							id = 'pluxurydolo'
-							name = 'Alexander'
-						}
-					}
-					scm {
-						url = 'scm:git:git://github.com/yandex-disk-spring-boot-starter.git'
-						connection = 'scm:git:git://github.com/yandex-disk-spring-boot-starter.git'
-						tag = project.version
-					}
-					licenses {
-						license {
-							name = 'The Apache License, Version 2.0'
-							url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-						}
-					}
-				}
-			}
-		}
-		repositories {
-			maven {
-				url = uri layout.buildDirectory.dir('staging-deploy')
-			}
-		}
-	}
+    publishing {
+        publications {
+            withType(MavenPublication).configureEach {
+                pom {
+                    name = 'yandex-disk-spring-boot-starter'
+                    description = 'Yandex Disk Spring Boot Starter made for personal use'
+                    url = 'https://github.com/pluxurydolo/yandex-disk-spring-boot-starter'
+
+                    developers {
+                        developer {
+                            id = 'pluxurydolo'
+                            name = 'Alexander'
+                        }
+                    }
+
+                    scm {
+                        url = 'scm:git:git://github.com/yandex-disk-spring-boot-starter.git'
+                        connection = 'scm:git:git://github.com/yandex-disk-spring-boot-starter.git'
+                        tag = project.version
+                    }
+
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                url = uri layout.buildDirectory.dir('staging-deploy')
+            }
+        }
+    }
 }
 
 jreleaser {
-	release {
-		github {
-			skipRelease.set true
-			skipTag.set true
-		}
-	}
-	signing {
-		active.set ALWAYS
-		armored.set true
-		verify.set true
-	}
-	project {
-		inceptionYear.set '2026'
-		author('@pluxurydolo')
-	}
-	deploy {
-		maven {
-			mavenCentral.create('sonatype') {
-				active.set ALWAYS
-				url = 'https://central.sonatype.com/api/v1/publisher'
-				stagingRepository layout.buildDirectory.dir('staging-deploy').get().toString()
-				setAuthorization 'Basic'
-				retryDelay.set 60
-			}
-		}
-	}
+    release {
+        github {
+            skipRelease.set true
+            skipTag.set true
+        }
+    }
+
+    signing {
+        active.set ALWAYS
+        armored.set true
+        verify.set true
+    }
+
+    project {
+        inceptionYear.set '2026'
+        author('@pluxurydolo')
+    }
+
+    deploy {
+        maven {
+            mavenCentral.create('sonatype') {
+                active.set ALWAYS
+                url = 'https://central.sonatype.com/api/v1/publisher'
+                stagingRepository layout.buildDirectory.dir('staging-deploy').get().toString()
+                setAuthorization 'Basic'
+                retryDelay.set 60
+            }
+        }
+    }
 }
 
 dependencies {
-	implementation "org.springframework.boot:spring-boot-starter:$springBootVersion"
-	implementation "org.springframework.boot:spring-boot-starter-webflux:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:$springBootVersion"
 }
