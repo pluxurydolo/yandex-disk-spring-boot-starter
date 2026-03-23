@@ -30,7 +30,9 @@ repositories {
 afterEvaluate {
     publishing {
         publications {
-            withType(MavenPublication).configureEach {
+            release(MavenPublication) {
+                from components.java
+
                 pom {
                     name = 'yandex-disk-spring-boot-starter'
                     description = 'Yandex Disk Spring Boot Starter made for personal use'
