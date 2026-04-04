@@ -42,7 +42,7 @@ public class YandexDiskClient {
             .uri(uri)
             .retrieve()
             .bodyToMono(YandexDiskDefaultResponse.class)
-            .doOnSuccess(_ -> LOGGER.info("nrhf Ссылка для скачивания на диск успешно получена"));
+            .doOnSuccess(_ -> LOGGER.info("nrhf [yandex-disk-starter] Ссылка для скачивания на диск успешно получена"));
     }
 
     public Mono<Integer> uploadFile(YandexDiskDefaultResponse uploadLink, byte[] file) {
@@ -57,7 +57,7 @@ public class YandexDiskClient {
             .retrieve()
             .bodyToMono(Void.class)
             .thenReturn(file.length)
-            .doOnSuccess(_ -> LOGGER.info("aboq Файл успешно загружен на диск"));
+            .doOnSuccess(_ -> LOGGER.info("aboq [yandex-disk-starter] Файл успешно загружен на диск"));
     }
 
     public Mono<YandexDiskDefaultResponse> getDownloadLink(String path) {
@@ -69,7 +69,7 @@ public class YandexDiskClient {
             .uri(uri)
             .retrieve()
             .bodyToMono(YandexDiskDefaultResponse.class)
-            .doOnSuccess(_ -> LOGGER.info("nonf Ссылка для скачивания с диска успешно получена"));
+            .doOnSuccess(_ -> LOGGER.info("nonf [yandex-disk-starter] Ссылка для скачивания с диска успешно получена"));
     }
 
     public Mono<byte[]> downloadFile(URI fileLocation) {
@@ -78,7 +78,7 @@ public class YandexDiskClient {
             .uri(fileLocation)
             .retrieve()
             .bodyToMono(byte[].class)
-            .doOnSuccess(_ -> LOGGER.info("rrew Файл успешно скачан с диска"));
+            .doOnSuccess(_ -> LOGGER.info("rrew [yandex-disk-starter] Файл успешно скачан с диска"));
     }
 
     public Mono<URI> getFileLocation(YandexDiskDefaultResponse downloadLink) {
@@ -92,7 +92,7 @@ public class YandexDiskClient {
             .toBodilessEntity()
             .map(HttpEntity::getHeaders)
             .mapNotNull(HttpHeaders::getLocation)
-            .doOnSuccess(_ -> LOGGER.info("yhcj Местонахождение файла успешно получено"));
+            .doOnSuccess(_ -> LOGGER.info("yhcj [yandex-disk-starter] Местонахождение файла успешно получено"));
     }
 
     public Mono<String> deleteFile(String path) {
@@ -106,7 +106,7 @@ public class YandexDiskClient {
             .retrieve()
             .toBodilessEntity()
             .thenReturn(path)
-            .doOnSuccess(_ -> LOGGER.info("jace Файл {} успешно удален с диска", path));
+            .doOnSuccess(_ -> LOGGER.info("jace [yandex-disk-starter] Файл {} успешно удален с диска", path));
     }
 
     private static String authorizationHeader(String yandexDiskToken) {
