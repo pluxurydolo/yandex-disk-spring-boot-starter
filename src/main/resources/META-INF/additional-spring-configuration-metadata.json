@@ -1,0 +1,25 @@
+{
+  "properties": [
+    {
+      "name": "yandex.disk.token",
+      "type": "java.lang.String",
+      "description": "Yandex Disk API токен.",
+      "sourceType": "com.pluxurydolo.yandexdisk.properties.YandexDiskProperties"
+    }
+  ],
+  "hints": [
+    {
+      "name": "yandex.disk.token",
+      "values": [
+        {
+          "value": "${YANDEX_DISK_TOKEN}"
+        }
+      ],
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    }
+  ]
+}

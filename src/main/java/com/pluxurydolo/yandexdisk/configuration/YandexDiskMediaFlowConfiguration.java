@@ -1,4 +1,4 @@
-package com.pluxurydolo.yandexdisk.config;
+package com.pluxurydolo.yandexdisk.configuration;
 
 import com.pluxurydolo.yandexdisk.flow.DeleteFileFlow;
 import com.pluxurydolo.yandexdisk.flow.DownloadFileFlow;
