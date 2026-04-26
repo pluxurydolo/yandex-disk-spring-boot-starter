@@ -3,6 +3,9 @@ package com.pluxurydolo.yandexdisk.client;
 import com.pluxurydolo.yandexdisk.dto.request.DeleteFileRequest;
 import com.pluxurydolo.yandexdisk.dto.request.DownloadFileRequest;
 import com.pluxurydolo.yandexdisk.dto.request.UploadFileRequest;
+import com.pluxurydolo.yandexdisk.exception.YandexDiskDeleteFileException;
+import com.pluxurydolo.yandexdisk.exception.YandexDiskDownloadFileException;
+import com.pluxurydolo.yandexdisk.exception.YandexDiskUploadFileException;
 import com.pluxurydolo.yandexdisk.flow.DeleteFileFlow;
 import com.pluxurydolo.yandexdisk.flow.DownloadFileFlow;
 import com.pluxurydolo.yandexdisk.flow.UploadFileFlow;
@@ -52,7 +55,7 @@ class YandexDiskClientTests {
         Mono<String> result = yandexDiskClient.uploadFile(uploadFileRequest());
 
         create(result)
-            .expectError(RuntimeException.class)
+            .expectError(YandexDiskUploadFileException.class)
             .verify();
     }
 
@@ -77,7 +80,7 @@ class YandexDiskClientTests {
         Mono<byte[]> result = yandexDiskClient.downloadFile(downloadFileRequest());
 
         create(result)
-            .expectError(RuntimeException.class)
+            .expectError(YandexDiskDownloadFileException.class)
             .verify();
     }
 
@@ -101,7 +104,7 @@ class YandexDiskClientTests {
         Mono<String> result = yandexDiskClient.deleteFile(deleteFileRequest());
 
         create(result)
-            .expectError(RuntimeException.class)
+            .expectError(YandexDiskDeleteFileException.class)
             .verify();
     }
 
