@@ -55,8 +55,7 @@ class DownloadFileFlowTests {
         Mono<byte[]> result = downloadFileFlow.downloadFile(downloadFileRequest());
 
         create(result)
-            .expectError(RuntimeException.class)
-            .verify();
+            .verifyErrorMatches(throwable -> throwable.getClass().equals(RuntimeException.class));
     }
 
     private static DownloadFileRequest downloadFileRequest() {

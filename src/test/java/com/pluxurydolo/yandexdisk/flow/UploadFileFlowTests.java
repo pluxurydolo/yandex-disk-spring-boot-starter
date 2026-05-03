@@ -46,8 +46,7 @@ class UploadFileFlowTests {
         Mono<String> result = uploadFileFlow.uploadFile(uploadFileRequest());
 
         create(result)
-            .expectError(RuntimeException.class)
-            .verify();
+            .verifyErrorMatches(throwable -> throwable.getClass().equals(RuntimeException.class));
     }
 
     private static UploadFileRequest uploadFileRequest() {

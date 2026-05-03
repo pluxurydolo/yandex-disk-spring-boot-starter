@@ -55,8 +55,7 @@ class YandexDiskClientTests {
         Mono<String> result = yandexDiskClient.uploadFile(uploadFileRequest());
 
         create(result)
-            .expectError(YandexDiskUploadFileException.class)
-            .verify();
+            .verifyErrorMatches(throwable -> throwable.getClass().equals(YandexDiskUploadFileException.class));
     }
 
     @Test
@@ -80,8 +79,7 @@ class YandexDiskClientTests {
         Mono<byte[]> result = yandexDiskClient.downloadFile(downloadFileRequest());
 
         create(result)
-            .expectError(YandexDiskDownloadFileException.class)
-            .verify();
+            .verifyErrorMatches(throwable -> throwable.getClass().equals(YandexDiskDownloadFileException.class));
     }
 
     @Test
@@ -104,8 +102,7 @@ class YandexDiskClientTests {
         Mono<String> result = yandexDiskClient.deleteFile(deleteFileRequest());
 
         create(result)
-            .expectError(YandexDiskDeleteFileException.class)
-            .verify();
+            .verifyErrorMatches(throwable -> throwable.getClass().equals(YandexDiskDeleteFileException.class));
     }
 
     private static UploadFileRequest uploadFileRequest() {
