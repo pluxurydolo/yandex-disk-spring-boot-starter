@@ -39,7 +39,7 @@ class YandexDiskClientIntegrationTests extends AbstractIntegrationTests {
                     .hasSize(1);
 
                 assertThat(logs.getFirst().getFormattedMessage())
-                    .isEqualTo("egwf [yandex-disk-starter] Загрузка файла успешно завершена");
+                    .isEqualTo("egwf [yandex-disk-starter] Загрузка файла path успешно завершена");
             });
     }
 
@@ -57,7 +57,7 @@ class YandexDiskClientIntegrationTests extends AbstractIntegrationTests {
                     .hasSize(1);
 
                 assertThat(logs.getFirst().getFormattedMessage())
-                    .isEqualTo("jfuq [yandex-disk-starter] Скачивание файла успешно завершено");
+                    .isEqualTo("jfuq [yandex-disk-starter] Скачивание файла path успешно завершено");
             });
     }
 
@@ -75,7 +75,7 @@ class YandexDiskClientIntegrationTests extends AbstractIntegrationTests {
                     .hasSize(1);
 
                 assertThat(logs.getFirst().getFormattedMessage())
-                    .isEqualTo("pyak [yandex-disk-starter] Удаление файла успешно завершено");
+                    .isEqualTo("pyak [yandex-disk-starter] Удаление файла path успешно завершено");
             });
     }
 

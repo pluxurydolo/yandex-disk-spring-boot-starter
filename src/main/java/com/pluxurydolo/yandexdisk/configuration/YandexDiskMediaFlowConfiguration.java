@@ -3,8 +3,9 @@ package com.pluxurydolo.yandexdisk.configuration;
 import com.pluxurydolo.yandexdisk.flow.DeleteFileFlow;
 import com.pluxurydolo.yandexdisk.flow.DownloadFileFlow;
 import com.pluxurydolo.yandexdisk.flow.UploadFileFlow;
-import com.pluxurydolo.yandexdisk.web.YandexDiskApiWebClient;
-import com.pluxurydolo.yandexdisk.web.YandexDiskDownloaderWebClient;
+import com.pluxurydolo.yandexdisk.web.YandexDiskApiHttpClient;
+import com.pluxurydolo.yandexdisk.web.factory.YandexDiskDownloaderClientFactory;
+import com.pluxurydolo.yandexdisk.web.factory.YandexDiskUploadClientFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,22 +15,25 @@ public class YandexDiskMediaFlowConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public UploadFileFlow uploadFileFlow(YandexDiskApiWebClient yandexDiskApiWebClient) {
-        return new UploadFileFlow(yandexDiskApiWebClient);
+    public UploadFileFlow uploadFileFlow(
+        YandexDiskApiHttpClient yandexDiskApiHttpClient,
+        YandexDiskUploadClientFactory yandexDiskUploadClientFactory
+    ) {
+        return new UploadFileFlow(yandexDiskApiHttpClient, yandexDiskUploadClientFactory);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public DownloadFileFlow downloadFileFlow(
-        YandexDiskApiWebClient yandexDiskApiWebClient,
-        YandexDiskDownloaderWebClient yandexDiskDownloaderWebClient
+        YandexDiskApiHttpClient yandexDiskApiHttpClient,
+        YandexDiskDownloaderClientFactory yandexDiskDownloaderClientFactory
     ) {
-        return new DownloadFileFlow(yandexDiskApiWebClient, yandexDiskDownloaderWebClient);
+        return new DownloadFileFlow(yandexDiskApiHttpClient, yandexDiskDownloaderClientFactory);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public DeleteFileFlow deleteFileFlow(YandexDiskApiWebClient yandexDiskApiWebClient) {
-        return new DeleteFileFlow(yandexDiskApiWebClient);
+    public DeleteFileFlow deleteFileFlow(YandexDiskApiHttpClient yandexDiskApiHttpClient) {
+        return new DeleteFileFlow(yandexDiskApiHttpClient);
     }
 }

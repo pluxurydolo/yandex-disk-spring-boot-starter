@@ -31,8 +31,10 @@ public class YandexDiskClient {
     }
 
     public Mono<String> uploadFile(UploadFileRequest request) {
+        String path = request.path();
+
         return uploadFileFlow.uploadFile(request)
-            .doOnSuccess(_ -> LOGGER.info("egwf [yandex-disk-starter] Загрузка файла успешно завершена"))
+            .doOnSuccess(_ -> LOGGER.info("egwf [yandex-disk-starter] Загрузка файла {} успешно завершена", path))
             .onErrorResume(throwable -> {
                 LOGGER.error("dveb [yandex-disk-starter] Произошла ошибка при загрузке файла");
                 return Mono.error(new YandexDiskUploadFileException(throwable));
@@ -40,8 +42,10 @@ public class YandexDiskClient {
     }
 
     public Mono<byte[]> downloadFile(DownloadFileRequest request) {
+        String path = request.path();
+
         return downloadFileFlow.downloadFile(request)
-            .doOnSuccess(_ -> LOGGER.info("jfuq [yandex-disk-starter] Скачивание файла успешно завершено"))
+            .doOnSuccess(_ -> LOGGER.info("jfuq [yandex-disk-starter] Скачивание файла {} успешно завершено", path))
             .onErrorResume(throwable -> {
                 LOGGER.error("wifj [yandex-disk-starter] Произошла ошибка при скачивании файла");
                 return Mono.error(new YandexDiskDownloadFileException(throwable));
@@ -49,8 +53,10 @@ public class YandexDiskClient {
     }
 
     public Mono<String> deleteFile(DeleteFileRequest request) {
+        String path = request.path();
+
         return deleteFileFlow.deleteFile(request)
-            .doOnSuccess(_ -> LOGGER.info("pyak [yandex-disk-starter] Удаление файла успешно завершено"))
+            .doOnSuccess(_ -> LOGGER.info("pyak [yandex-disk-starter] Удаление файла {} успешно завершено", path))
             .onErrorResume(throwable -> {
                 LOGGER.error("khzy [yandex-disk-starter] Произошла ошибка при удалении файла");
                 return Mono.error(new YandexDiskDeleteFileException(throwable));
